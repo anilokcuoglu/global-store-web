@@ -1,8 +1,6 @@
 import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import FeaturesSection from '@/components/FeaturesSection';
-import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -11,7 +9,7 @@ export default function Home() {
       {/* <HeroSection /> */}
       <FeaturedProducts />
       <FeaturesSection />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

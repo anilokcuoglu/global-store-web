@@ -165,6 +165,15 @@ export const translations = {
               updateSuccess: "Profil başarıyla güncellendi!",
               updateError: "Profil güncellenirken bir hata oluştu."
             },
+            search: {
+              placeholder: "Ürün ara...",
+              searchingFor: "Aranıyor",
+              resultsFor: "Arama sonuçları",
+              resultsFound: "sonuç bulundu",
+              noResults: "Sonuç Bulunamadı",
+              noResultsMessage: "Arama kriterlerinize uygun ürün bulunamadı. Farklı anahtar kelimeler deneyin.",
+              clearSearch: "Aramayı Temizle"
+            },
     features: {
       fastDelivery: {
         title: "Hızlı Teslimat",
@@ -368,6 +377,15 @@ export const translations = {
               updating: "Updating...",
               updateSuccess: "Profile updated successfully!",
               updateError: "An error occurred while updating profile."
+            },
+            search: {
+              placeholder: "Search products...",
+              searchingFor: "Searching for",
+              resultsFor: "Search results for",
+              resultsFound: "results found",
+              noResults: "No Results Found",
+              noResultsMessage: "No products found matching your search criteria. Try different keywords.",
+              clearSearch: "Clear Search"
             },
     features: {
       fastDelivery: {
