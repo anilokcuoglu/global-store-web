@@ -70,7 +70,7 @@ export function AppProvider({ children }: AppProviderProps) {
   };
 
   const convertAndFormatPrice = (priceUSD: number): string => {
-    if (!currencyRates) return `$${priceUSD.toFixed(2)}`;
+    if (!currencyRates) return `$${priceUSD?.toFixed(2)}`;
     
     const convertedPrice = convertPrice(priceUSD, currency, currencyRates);
     return formatPrice(convertedPrice, currency);

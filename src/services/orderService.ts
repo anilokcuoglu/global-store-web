@@ -1,74 +1,37 @@
-import { Product } from './productService';
-import { User } from './userService';
-
 export interface OrderItem {
-  productId: number;
-  product: Product;
-  quantity: number;
+  id: number;
+  title: string;
   price: number;
-}
-
-export interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  phone: string;
+  description: string;
+  category: string;
+  image: string;
+  rating: { rate: number; count: number };
+  quantity: number;
 }
 
 export interface PaymentInfo {
-  method: 'credit_card' | 'paypal' | 'bank_transfer' | 'cash_on_delivery';
-  cardNumber?: string;
-  expiryDate?: string;
-  cvv?: string;
-  cardholderName?: string;
+  cardNumber: string;
+  cardHolder: string;
+  expiryDate: string;
+  cvv: string;
+  cardType: "visa" | "mastercard" | "amex" | "other";
 }
 
 export interface Order {
-  id: number;
-  userId: number;
+  id: string;
+  orderNumber: string;
   items: OrderItem[];
-  shippingAddress: ShippingAddress;
-  paymentInfo: PaymentInfo;
   subtotal: number;
-  tax: number;
   shipping: number;
   total: number;
-  status: OrderStatus;
+  paymentInfo: PaymentInfo;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   createdAt: Date;
   updatedAt: Date;
-  trackingNumber?: string;
-  estimatedDelivery?: Date;
+  estimatedDelivery: Date;
 }
 
-export type OrderStatus = 
-  | 'pending'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled'
-  | 'refunded';
-
-export interface CreateOrderData {
-  items: OrderItem[];
-  shippingAddress: ShippingAddress;
-  paymentInfo: PaymentInfo;
-  userId: number;
-}
-
-export interface OrderFilters {
-  status?: OrderStatus;
-  startDate?: Date;
-  endDate?: Date;
-  userId?: number;
-}
-
-const API_BASE_URL = "https://fakestoreapi.com";
-const ORDERS_STORAGE_KEY = 'global-store-orders';
+const ORDERS_STORAGE_KEY = "global-store-orders";
 
 export class OrderService {
   private static instance: OrderService;
@@ -86,231 +49,176 @@ export class OrderService {
   }
 
   private loadOrdersFromStorage(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       const storedOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
       if (storedOrders) {
         const parsedOrders = JSON.parse(storedOrders);
-        this.orders = parsedOrders.map((order: any) => ({
+        this.orders = parsedOrders.map((order: Order) => ({
           ...order,
           createdAt: new Date(order.createdAt),
           updatedAt: new Date(order.updatedAt),
-          estimatedDelivery: order.estimatedDelivery ? new Date(order.estimatedDelivery) : undefined
+          estimatedDelivery: new Date(order.estimatedDelivery),
         }));
       }
     } catch (error) {
-      console.error('Error loading orders from storage:', error);
+      console.error("Error loading orders from storage:", error);
       this.orders = [];
     }
   }
 
   private saveOrdersToStorage(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(this.orders));
     } catch (error) {
-      console.error('Error saving orders to storage:', error);
+      console.error("Error saving orders to storage:", error);
     }
   }
 
-  public async createOrder(orderData: CreateOrderData): Promise<Order> {
-    try {
-      // Calculate totals
-      const subtotal = orderData.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-      const tax = subtotal * 0.08; // 8% tax
-      const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
-      const total = subtotal + tax + shipping;
-
-      const newOrder: Order = {
-        id: Date.now(), // Simple ID generation
-        userId: orderData.userId,
-        items: orderData.items,
-        shippingAddress: orderData.shippingAddress,
-        paymentInfo: orderData.paymentInfo,
-        subtotal,
-        tax,
-        shipping,
-        total,
-        status: 'pending',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        trackingNumber: this.generateTrackingNumber(),
-        estimatedDelivery: this.calculateEstimatedDelivery()
-      };
-
-      // In a real app, you would send this to your backend
-      // const response = await fetch(`${API_BASE_URL}/orders`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(newOrder),
-      // });
-
-      this.orders.push(newOrder);
-      this.saveOrdersToStorage();
-
-      return newOrder;
-    } catch (error) {
-      console.error('Error creating order:', error);
-      throw new Error('Failed to create order. Please try again.');
-    }
+  private generateOrderNumber(): string {
+    const timestamp = Date.now().toString();
+    const random = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, "0");
+    return `GS-${timestamp.slice(-6)}-${random}`;
   }
 
-  public async getOrderById(orderId: number): Promise<Order | null> {
-    const order = this.orders.find(order => order.id === orderId);
-    return order || null;
-  }
-
-  public async getOrdersByUserId(userId: number): Promise<Order[]> {
-    return this.orders.filter(order => order.userId === userId);
-  }
-
-  public async getAllOrders(filters?: OrderFilters): Promise<Order[]> {
-    let filteredOrders = [...this.orders];
-
-    if (filters) {
-      if (filters.status) {
-        filteredOrders = filteredOrders.filter(order => order.status === filters.status);
-      }
-
-      if (filters.userId) {
-        filteredOrders = filteredOrders.filter(order => order.userId === filters.userId);
-      }
-
-      if (filters.startDate) {
-        filteredOrders = filteredOrders.filter(order => order.createdAt >= filters.startDate!);
-      }
-
-      if (filters.endDate) {
-        filteredOrders = filteredOrders.filter(order => order.createdAt <= filters.endDate!);
-      }
-    }
-
-    return filteredOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }
-
-  public async updateOrderStatus(orderId: number, status: OrderStatus): Promise<Order | null> {
-    const order = this.orders.find(order => order.id === orderId);
-    
-    if (!order) {
-      return null;
-    }
-
-    order.status = status;
-    order.updatedAt = new Date();
-
-    // Update tracking info for shipped orders
-    if (status === 'shipped' && !order.trackingNumber) {
-      order.trackingNumber = this.generateTrackingNumber();
-      order.estimatedDelivery = this.calculateEstimatedDelivery();
-    }
-
-    this.saveOrdersToStorage();
-    return order;
-  }
-
-  public async cancelOrder(orderId: number): Promise<Order | null> {
-    const order = this.orders.find(order => order.id === orderId);
-    
-    if (!order) {
-      return null;
-    }
-
-    // Only allow cancellation of pending or confirmed orders
-    if (order.status !== 'pending' && order.status !== 'confirmed') {
-      throw new Error('Cannot cancel order in current status');
-    }
-
-    order.status = 'cancelled';
-    order.updatedAt = new Date();
-    this.saveOrdersToStorage();
-
-    return order;
-  }
-
-  public async refundOrder(orderId: number): Promise<Order | null> {
-    const order = this.orders.find(order => order.id === orderId);
-    
-    if (!order) {
-      return null;
-    }
-
-    // Only allow refund of delivered orders
-    if (order.status !== 'delivered') {
-      throw new Error('Can only refund delivered orders');
-    }
-
-    order.status = 'refunded';
-    order.updatedAt = new Date();
-    this.saveOrdersToStorage();
-
-    return order;
-  }
-
-  public getOrderStatusText(status: OrderStatus): string {
-    const statusTexts = {
-      pending: 'Pending',
-      confirmed: 'Confirmed',
-      processing: 'Processing',
-      shipped: 'Shipped',
-      delivered: 'Delivered',
-      cancelled: 'Cancelled',
-      refunded: 'Refunded'
-    };
-
-    return statusTexts[status];
-  }
-
-  public getOrderStatusColor(status: OrderStatus): string {
-    const statusColors = {
-      pending: 'text-yellow-600 bg-yellow-100',
-      confirmed: 'text-blue-600 bg-blue-100',
-      processing: 'text-purple-600 bg-purple-100',
-      shipped: 'text-indigo-600 bg-indigo-100',
-      delivered: 'text-green-600 bg-green-100',
-      cancelled: 'text-red-600 bg-red-100',
-      refunded: 'text-gray-600 bg-gray-100'
-    };
-
-    return statusColors[status];
-  }
-
-  public getOrderStats(userId?: number): {
-    totalOrders: number;
-    totalSpent: number;
-    averageOrderValue: number;
-    statusCounts: Record<OrderStatus, number>;
-  } {
-    const userOrders = userId ? this.orders.filter(order => order.userId === userId) : this.orders;
-    
-    const totalOrders = userOrders.length;
-    const totalSpent = userOrders.reduce((total, order) => total + order.total, 0);
-    const averageOrderValue = totalOrders > 0 ? totalSpent / totalOrders : 0;
-
-    const statusCounts = userOrders.reduce((counts, order) => {
-      counts[order.status] = (counts[order.status] || 0) + 1;
-      return counts;
-    }, {} as Record<OrderStatus, number>);
-
-    return {
-      totalOrders,
-      totalSpent,
-      averageOrderValue,
-      statusCounts
-    };
-  }
-
-  private generateTrackingNumber(): string {
-    return 'TRK' + Math.random().toString(36).substr(2, 9).toUpperCase();
-  }
-
-  private calculateEstimatedDelivery(): Date {
+  private calculateDeliveryDate(): Date {
     const deliveryDate = new Date();
-    deliveryDate.setDate(deliveryDate.getDate() + 3); // 3 days from now
+    deliveryDate.setDate(deliveryDate.getDate() + 3);
     return deliveryDate;
+  }
+
+  public async createOrder(
+    items: OrderItem[],
+    paymentInfo: PaymentInfo
+  ): Promise<Order> {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const subtotal = items.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const shipping = 0;
+
+    const total = subtotal + shipping;
+
+    const order: Order = {
+      id: `order_${Date.now()}`,
+      orderNumber: this.generateOrderNumber(),
+      items,
+      subtotal,
+      shipping,
+      total,
+      paymentInfo,
+      status: "processing",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      estimatedDelivery: this.calculateDeliveryDate(),
+    };
+
+    this.orders.unshift(order); // Add to beginning of array
+    this.saveOrdersToStorage();
+
+    return order;
+  }
+
+  public getAllOrders(): Order[] {
+    return [...this.orders];
+  }
+
+  public getOrderById(orderId: string): Order | null {
+    return this.orders.find((order) => order.id === orderId) || null;
+  }
+
+  public getOrderByNumber(orderNumber: string): Order | null {
+    return (
+      this.orders.find((order) => order.orderNumber === orderNumber) || null
+    );
+  }
+
+  public updateOrderStatus(orderId: string, status: Order["status"]): boolean {
+    const order = this.orders.find((order) => order.id === orderId);
+    if (order) {
+      order.status = status;
+      order.updatedAt = new Date();
+      this.saveOrdersToStorage();
+      return true;
+    }
+    return false;
+  }
+
+  public getOrdersByStatus(status: Order["status"]): Order[] {
+    return this.orders.filter((order) => order.status === status);
+  }
+
+  public getRecentOrders(limit: number = 5): Order[] {
+    return this.orders.slice(0, limit);
+  }
+
+  public getTotalOrders(): number {
+    return this.orders.length;
+  }
+
+  public getTotalSpent(): number {
+    return this.orders.reduce((total, order) => total + order.total, 0);
+  }
+
+  public deleteOrder(orderId: string): boolean {
+    const initialLength = this.orders.length;
+    this.orders = this.orders.filter((order) => order.id !== orderId);
+
+    if (this.orders.length < initialLength) {
+      this.saveOrdersToStorage();
+      return true;
+    }
+    return false;
+  }
+
+  public clearAllOrders(): void {
+    this.orders = [];
+    this.saveOrdersToStorage();
+  }
+
+  // Utility functions
+  public formatOrderDate(date: Date): string {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    return `${day} ${month} ${year} ${hours}:${minutes}`;
+  }
+
+  public getStatusText(status: Order["status"]): string {
+    const statusMap = {
+      pending: "Beklemede",
+      processing: "İşleniyor",
+      shipped: "Kargoya Verildi",
+      delivered: "Teslim Edildi",
+      cancelled: "İptal Edildi",
+    };
+    return statusMap[status] || status;
+  }
+
+  public getStatusColor(status: Order["status"]): string {
+    const colorMap = {
+      pending: "text-yellow-600 bg-yellow-100",
+      processing: "text-blue-600 bg-blue-100",
+      shipped: "text-purple-600 bg-purple-100",
+      delivered: "text-green-600 bg-green-100",
+      cancelled: "text-red-600 bg-red-100",
+    };
+    return colorMap[status] || "text-gray-600 bg-gray-100";
   }
 }
 
@@ -318,60 +226,60 @@ export class OrderService {
 export const orderService = OrderService.getInstance();
 
 // Utility functions
-export function formatOrderDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+export function validateCardNumber(cardNumber: string): boolean {
+  // Remove spaces and non-digits
+  const cleaned = cardNumber.replace(/\D/g, "");
+
+  // Check if it's a valid length (13-19 digits)
+  if (cleaned.length < 13 || cleaned.length > 19) {
+    return false;
+  }
+
+  // Luhn algorithm
+  let sum = 0;
+  let isEven = false;
+
+  for (let i = cleaned.length - 1; i >= 0; i--) {
+    let digit = parseInt(cleaned[i]);
+
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    isEven = !isEven;
+  }
+
+  return sum % 10 === 0;
 }
 
-export function formatOrderTotal(total: number, currency: string = 'USD'): string {
-  const symbols = {
-    USD: '$',
-    EUR: '€',
-    TRY: '₺'
-  };
-  
-  return `${symbols[currency as keyof typeof symbols] || '$'}${total.toFixed(2)}`;
+export function getCardType(cardNumber: string): PaymentInfo["cardType"] {
+  const cleaned = cardNumber.replace(/\D/g, "");
+
+  if (cleaned.startsWith("4")) {
+    return "visa";
+  } else if (cleaned.startsWith("5") || cleaned.startsWith("2")) {
+    return "mastercard";
+  } else if (cleaned.startsWith("3")) {
+    return "amex";
+  } else {
+    return "other";
+  }
 }
 
-export function validateShippingAddress(address: ShippingAddress): {
-  isValid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
+export function formatCardNumber(cardNumber: string): string {
+  const cleaned = cardNumber.replace(/\D/g, "");
+  const groups = cleaned.match(/.{1,4}/g) || [];
+  return groups.join(" ");
+}
 
-  if (!address.firstName.trim()) {
-    errors.push('First name is required');
+export function formatExpiryDate(expiryDate: string): string {
+  const cleaned = expiryDate.replace(/\D/g, "");
+  if (cleaned.length >= 2) {
+    return cleaned.slice(0, 2) + "/" + cleaned.slice(2, 4);
   }
-
-  if (!address.lastName.trim()) {
-    errors.push('Last name is required');
-  }
-
-  if (!address.address.trim()) {
-    errors.push('Address is required');
-  }
-
-  if (!address.city.trim()) {
-    errors.push('City is required');
-  }
-
-  if (!address.zipCode.trim()) {
-    errors.push('ZIP code is required');
-  }
-
-  if (!address.country.trim()) {
-    errors.push('Country is required');
-  }
-
-  if (!address.phone.trim()) {
-    errors.push('Phone number is required');
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors
-  };
+  return cleaned;
 }
