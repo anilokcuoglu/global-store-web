@@ -15,7 +15,6 @@ interface ProductCardProps {
     rate: number;
     count: number;
   };
-  onAddToCart?: (id: number) => void;
 }
 
 export default function ProductCard({
@@ -25,7 +24,6 @@ export default function ProductCard({
   priceUSD,
   image,
   rating,
-  onAddToCart,
 }: ProductCardProps) {
   const { t } = useTranslation();
   const { convertAndFormatPrice } = useApp();
@@ -41,10 +39,10 @@ export default function ProductCard({
   const handleQuantityChange = async (newQuantity: number) => {
     if (newQuantity >= 1) {
       setIsUpdatingQuantity(true);
-      
+
       // Simulate loading delay for better UX
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       setQuantity(newQuantity);
       setIsUpdatingQuantity(false);
     }
@@ -52,10 +50,10 @@ export default function ProductCard({
 
   const handleAddToCartWithQuantity = async () => {
     setIsAddingToCart(true);
-    
+
     // Simulate loading delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const product = {
       id,
       title: name,
@@ -66,17 +64,9 @@ export default function ProductCard({
       rating: rating || { rate: 0, count: 0 },
     };
 
-    // Add to cart with current quantity
     cartService.addToCart(product, quantity);
+    window.dispatchEvent(new CustomEvent("cartUpdated"));
 
-    // Dispatch custom event for cart update
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
-
-    // Call the callback after successful addition (no double addition)
-    if (onAddToCart) {
-      onAddToCart(id);
-    }
-    
     setIsAddingToCart(false);
   };
 

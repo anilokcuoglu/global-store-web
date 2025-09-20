@@ -38,12 +38,6 @@ export default function FeaturedProducts() {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (id: number) => {
-    // This function is called from ProductCard after successful add to cart
-    // No need to add to cart here since ProductCard handles it
-    console.log(`Ürün ${id} sepete eklendi`);
-  };
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
 
@@ -53,7 +47,6 @@ export default function FeaturedProducts() {
       setProducts(allProducts.slice(0, 8));
       setDisplayCount(8);
     } else {
-      // Filter products based on search query
       const filtered = allProducts.filter(
         (product) =>
           product.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -201,7 +194,6 @@ export default function FeaturedProducts() {
                   priceUSD={product.price}
                   image={product.image}
                   rating={product.rating}
-                  onAddToCart={handleAddToCart}
                 />
               ))}
             </div>
