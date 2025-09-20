@@ -137,6 +137,34 @@ export const translations = {
                 orderFailed: "Sipariş oluşturulamadı. Lütfen tekrar deneyin."
               }
             },
+            profile: {
+              title: "Profilim",
+              subtitle: "Hesap bilgilerinizi yönetin ve sipariş geçmişinizi görüntüleyin",
+              loading: "Yükleniyor...",
+              orderHistory: "Geçmiş Siparişler",
+              myProfile: "Profilim",
+              totalOrders: "Toplam Sipariş",
+              totalSpent: "Toplam Harcama",
+              deliveredOrders: "Teslim Edilen",
+              recentOrders: "Son Siparişler",
+              noOrders: "Henüz Sipariş Yok",
+              noOrdersMessage: "Henüz hiç sipariş vermediniz. Alışverişe başlamak için ürünleri keşfedin.",
+              items: "Ürün",
+              total: "Toplam",
+              estimatedDelivery: "Tahmini Teslimat",
+              updateProfile: "Profili Güncelle",
+              firstName: "Ad",
+              lastName: "Soyad",
+              email: "E-posta",
+              phone: "Telefon",
+              city: "Şehir",
+              zipcode: "Posta Kodu",
+              street: "Sokak",
+              number: "Numara",
+              updating: "Güncelleniyor...",
+              updateSuccess: "Profil başarıyla güncellendi!",
+              updateError: "Profil güncellenirken bir hata oluştu."
+            },
     features: {
       fastDelivery: {
         title: "Hızlı Teslimat",
@@ -312,6 +340,34 @@ export const translations = {
                 cvvInvalid: "Please enter 3-4 digit CVV code",
                 orderFailed: "Failed to create order. Please try again."
               }
+            },
+            profile: {
+              title: "My Profile",
+              subtitle: "Manage your account information and view your order history",
+              loading: "Loading...",
+              orderHistory: "Order History",
+              myProfile: "My Profile",
+              totalOrders: "Total Orders",
+              totalSpent: "Total Spent",
+              deliveredOrders: "Delivered",
+              recentOrders: "Recent Orders",
+              noOrders: "No Orders Yet",
+              noOrdersMessage: "You haven't placed any orders yet. Start shopping to discover products.",
+              items: "Items",
+              total: "Total",
+              estimatedDelivery: "Estimated Delivery",
+              updateProfile: "Update Profile",
+              firstName: "First Name",
+              lastName: "Last Name",
+              email: "Email",
+              phone: "Phone",
+              city: "City",
+              zipcode: "Zip Code",
+              street: "Street",
+              number: "Number",
+              updating: "Updating...",
+              updateSuccess: "Profile updated successfully!",
+              updateError: "An error occurred while updating profile."
             },
     features: {
       fastDelivery: {
