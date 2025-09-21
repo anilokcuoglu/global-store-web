@@ -181,9 +181,9 @@ export function calculateCartTotals(items: CartItem[], currency: string = 'USD')
   total: number;
 } {
   const subtotal = items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-  const tax = subtotal * 0.08; // 8% tax
-  const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
-  const total = subtotal + tax + shipping;
+  const tax = 0; // No tax
+  const shipping = 0; // No shipping
+  const total = subtotal; // Total equals subtotal only
 
   return {
     subtotal,

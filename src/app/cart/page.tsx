@@ -301,19 +301,9 @@ export default function CartPage() {
                 </h3>
 
                 <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                    <span>{t('cart.subtotal')}</span>
+                  <div className="flex justify-between text-lg font-semibold text-slate-900 dark:text-white">
+                    <span>{t('cart.total')}</span>
                     <span>{convertAndFormatPrice(getTotalPrice())}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                    <span>{t('cart.shipping')}</span>
-                    <span>{t('cart.free')}</span>
-                  </div>
-                  <div className="border-t border-slate-200 dark:border-slate-600 pt-3">
-                    <div className="flex justify-between text-lg font-semibold text-slate-900 dark:text-white">
-                      <span>{t('cart.total')}</span>
-                      <span>{convertAndFormatPrice(getTotalPrice() * 1.18)}</span>
-                    </div>
                   </div>
                 </div>
 

@@ -186,20 +186,9 @@ export default function CheckoutSuccessPage() {
 
             {/* Order Totals */}
             <div className="space-y-3 border-t border-slate-200 dark:border-slate-600 pt-4">
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>{t("checkout.subtotal")}</span>
-                <span>{convertAndFormatPrice(order.subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>{t("checkout.shipping")}</span>
-                <span>{t("checkout.free")}</span>
-              </div>
-
-              <div className="border-t border-slate-200 dark:border-slate-600 pt-3">
-                <div className="flex justify-between text-lg font-semibold text-slate-900 dark:text-white">
-                  <span>{t("checkout.total")}</span>
-                  <span>{convertAndFormatPrice(order.total)}</span>
-                </div>
+              <div className="flex justify-between text-lg font-semibold text-slate-900 dark:text-white">
+                <span>{t("checkout.total")}</span>
+                <span>{convertAndFormatPrice(order.total)}</span>
               </div>
             </div>
           </div>
