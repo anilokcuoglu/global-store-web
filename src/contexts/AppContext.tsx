@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getCurrencyRates, convertPrice, formatPrice, CurrencyRates } from '@/services/currencyService';
+import { AuthProvider } from './AuthContext';
 
 interface AppContextType {
   language: 'en' | 'tr';
@@ -88,7 +89,9 @@ export function AppProvider({ children }: AppProviderProps) {
 
   return (
     <AppContext.Provider value={value}>
-      {children}
+      <AuthProvider>
+        {children}
+      </AuthProvider>
     </AppContext.Provider>
   );
 }

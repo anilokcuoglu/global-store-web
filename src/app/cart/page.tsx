@@ -7,6 +7,7 @@ import { cartService } from '@/services';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import GiftModal from '@/components/GiftModal';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface CartItem {
   id: number;
@@ -165,7 +166,8 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-16">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -342,5 +344,6 @@ export default function CartPage() {
         />
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

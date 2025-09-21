@@ -210,6 +210,49 @@ export const translations = {
     language: {
       turkish: "Türkçe",
       english: "English"
+    },
+    auth: {
+      login: "Giriş Yap",
+      register: "Kayıt Ol",
+      email: "E-posta",
+      password: "Şifre",
+      confirmPassword: "Şifre Tekrar",
+      firstName: "Ad",
+      lastName: "Soyad",
+      loginTitle: "Hesabınıza Giriş Yapın",
+      registerTitle: "Yeni Hesap Oluşturun",
+      loginSubtitle: "E-posta ve şifrenizi girerek giriş yapın",
+      registerSubtitle: "Bilgilerinizi girerek yeni hesap oluşturun",
+      emailPlaceholder: "ornek@email.com",
+      passwordPlaceholder: "Şifrenizi girin",
+      confirmPasswordPlaceholder: "Şifrenizi tekrar girin",
+      firstNamePlaceholder: "Adınızı girin",
+      lastNamePlaceholder: "Soyadınızı girin",
+      rememberMe: "Beni Hatırla",
+      forgotPassword: "Şifremi Unuttum",
+      noAccount: "Hesabınız yok mu?",
+      haveAccount: "Zaten hesabınız var mı?",
+      createAccount: "Hesap Oluştur",
+      signIn: "Giriş Yap",
+      mockLogin: "Demo Giriş",
+      mockLoginDescription: "FakeStore API ile gerçek demo hesabı ile giriş yapın",
+      errors: {
+        emailRequired: "E-posta adresi zorunludur",
+        emailInvalid: "Geçerli bir e-posta adresi girin",
+        passwordRequired: "Şifre zorunludur",
+        passwordMinLength: "Şifre en az 6 karakter olmalıdır",
+        confirmPasswordRequired: "Şifre tekrarı zorunludur",
+        passwordsNotMatch: "Şifreler eşleşmiyor",
+        firstNameRequired: "Ad zorunludur",
+        lastNameRequired: "Soyad zorunludur",
+        loginFailed: "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.",
+        registerFailed: "Kayıt başarısız. Lütfen tekrar deneyin.",
+        networkError: "Ağ hatası. Lütfen internet bağlantınızı kontrol edin."
+      },
+      success: {
+        loginSuccess: "Giriş başarılı!",
+        registerSuccess: "Kayıt başarılı! Hoş geldiniz!"
+      }
     }
   },
   en: {
@@ -423,6 +466,49 @@ export const translations = {
     language: {
       turkish: "Türkçe",
       english: "English"
+    },
+    auth: {
+      login: "Login",
+      register: "Register",
+      email: "Email",
+      password: "Password",
+      confirmPassword: "Confirm Password",
+      firstName: "First Name",
+      lastName: "Last Name",
+      loginTitle: "Sign In to Your Account",
+      registerTitle: "Create New Account",
+      loginSubtitle: "Enter your email and password to sign in",
+      registerSubtitle: "Enter your information to create a new account",
+      emailPlaceholder: "example@email.com",
+      passwordPlaceholder: "Enter your password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      firstNamePlaceholder: "Enter your first name",
+      lastNamePlaceholder: "Enter your last name",
+      rememberMe: "Remember Me",
+      forgotPassword: "Forgot Password?",
+      noAccount: "Don't have an account?",
+      haveAccount: "Already have an account?",
+      createAccount: "Create Account",
+      signIn: "Sign In",
+      mockLogin: "Demo Login",
+      mockLoginDescription: "Sign in with real FakeStore API demo account",
+      errors: {
+        emailRequired: "Email address is required",
+        emailInvalid: "Please enter a valid email address",
+        passwordRequired: "Password is required",
+        passwordMinLength: "Password must be at least 6 characters",
+        confirmPasswordRequired: "Password confirmation is required",
+        passwordsNotMatch: "Passwords do not match",
+        firstNameRequired: "First name is required",
+        lastNameRequired: "Last name is required",
+        loginFailed: "Login failed. Please check your credentials.",
+        registerFailed: "Registration failed. Please try again.",
+        networkError: "Network error. Please check your internet connection."
+      },
+      success: {
+        loginSuccess: "Login successful!",
+        registerSuccess: "Registration successful! Welcome!"
+      }
     }
   }
 };

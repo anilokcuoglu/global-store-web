@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAuth } from "@/contexts/AuthContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import CurrencySwitcher from "./CurrencySwitcher";
 import { cartService } from "@/services";
 
 export default function Header() {
   const { t } = useTranslation();
+  const { user, logout } = useAuth();
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
@@ -77,6 +79,21 @@ export default function Header() {
               )}
             </Link>
 
+            {/* User Info */}
+            <div className="flex items-center space-x-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">
+                  {user?.firstName?.charAt(0) || 'U'}
+                </span>
+              </div>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                {user?.firstName} {user?.lastName}
+                {user?.isDemo && (
+                  <span className="ml-1 text-xs text-blue-600 dark:text-blue-400">(Demo)</span>
+                )}
+              </span>
+            </div>
+
             <Link
               href="/profile"
               className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 group"
@@ -95,6 +112,27 @@ export default function Header() {
                 />
               </svg>
             </Link>
+
+            {/* Logout Button */}
+            <button
+              onClick={logout}
+              className="p-2 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 group"
+              title="Logout"
+            >
+              <svg
+                className="w-5 h-5 group-hover:scale-110 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
