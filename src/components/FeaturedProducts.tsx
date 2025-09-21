@@ -8,13 +8,10 @@ import { getAllProducts, Product } from "@/services/productService";
 
 export default function FeaturedProducts() {
   const { t } = useTranslation();
-  const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [displayCount, setDisplayCount] = useState(8);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -25,8 +22,6 @@ export default function FeaturedProducts() {
         const fetchedProducts = await getAllProducts();
         setAllProducts(fetchedProducts);
         setFilteredProducts(fetchedProducts);
-        // İlk 8 ürünü featured olarak göster
-        setProducts(fetchedProducts.slice(0, 8));
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(t("products.errorMessage"));
@@ -44,8 +39,6 @@ export default function FeaturedProducts() {
     if (!query.trim()) {
       // If search is empty, show all products
       setFilteredProducts(allProducts);
-      setProducts(allProducts.slice(0, 8));
-      setDisplayCount(8);
     } else {
       const filtered = allProducts.filter(
         (product) =>
@@ -55,27 +48,8 @@ export default function FeaturedProducts() {
       );
 
       setFilteredProducts(filtered);
-      setProducts(filtered.slice(0, 8));
-      setDisplayCount(8);
     }
   };
-
-  const handleLoadMore = async () => {
-    if (loadingMore) return;
-
-    setLoadingMore(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const newDisplayCount = displayCount + 8;
-    const newProducts = filteredProducts.slice(0, newDisplayCount);
-
-    setProducts(newProducts);
-    setDisplayCount(newDisplayCount);
-    setLoadingMore(false);
-  };
-
-  const hasMoreProducts = displayCount < filteredProducts.length;
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -91,11 +65,10 @@ export default function FeaturedProducts() {
           </div>
         </div>
 
-        {/* Search Results Info */}
         {searchQuery && (
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              {t("search.resultsFor")} "{searchQuery}"
+              {t("search.resultsFor")} &quot;{searchQuery}&quot;
             </h2>
             <p className="text-slate-600 dark:text-slate-300">
               {filteredProducts.length} {t("search.resultsFound")}
@@ -151,7 +124,7 @@ export default function FeaturedProducts() {
           </div>
         )}
 
-        {!loading && !error && products.length === 0 && (
+        {!loading && !error && filteredProducts.length === 0 && (
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -182,10 +155,10 @@ export default function FeaturedProducts() {
         )}
 
         {/* Products Grid */}
-        {!loading && !error && products.length > 0 && (
+        {!loading && !error && filteredProducts.length > 0 && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}
@@ -197,49 +170,6 @@ export default function FeaturedProducts() {
                 />
               ))}
             </div>
-
-            {hasMoreProducts && (
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {loadingMore ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>{t("products.loadingMore")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                      </svg>
-                      <span>{t("products.loadMore")}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {!hasMoreProducts && filteredProducts.length > 8 && (
-              <div className="text-center mt-8">
-                <p className="text-slate-600 dark:text-slate-300">
-                  {t("products.allShown")} ({filteredProducts.length}{" "}
-                  {t("products.totalProducts")})
-                </p>
-              </div>
-            )}
           </>
         )}
       </div>
