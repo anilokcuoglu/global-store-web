@@ -43,7 +43,12 @@ export class CartService {
         const parsedCart = JSON.parse(storedCart);
         this.cart = {
           ...parsedCart,
-          items: parsedCart.items.map((item: any) => ({
+          items: parsedCart.items.map((item: {
+            id: number;
+            product: Product;
+            quantity: number;
+            addedAt: string;
+          }) => ({
             ...item,
             addedAt: new Date(item.addedAt)
           }))
@@ -146,7 +151,16 @@ export class CartService {
     };
   }
 
-  public getCartItems(): any[] {
+  public getCartItems(): {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+    rating: { rate: number; count: number };
+    quantity: number;
+  }[] {
     return this.cart.items.map(item => ({
       id: item.id, // Use item ID (which is now product ID)
       title: item.product.title,
@@ -174,7 +188,7 @@ export function formatCartPrice(price: number, currency: string = 'USD'): string
   return `${symbols[currency as keyof typeof symbols] || '$'}${price.toFixed(2)}`;
 }
 
-export function calculateCartTotals(items: CartItem[], currency: string = 'USD'): {
+export function calculateCartTotals(items: CartItem[]): {
   subtotal: number;
   tax: number;
   shipping: number;

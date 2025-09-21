@@ -117,9 +117,9 @@ export default function CheckoutPage() {
     );
   };
 
-  const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
-  };
+  // const getTotalItems = () => {
+  //   return cartItems.reduce((total, item) => total + item.quantity, 0);
+  // };
 
   if (loading) {
     return (

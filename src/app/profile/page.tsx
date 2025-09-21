@@ -13,7 +13,7 @@ export default function ProfilePage() {
 
   const [activeTab, setActiveTab] = useState<"orders" | "profile">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
-  const [user, setUser] = useState<User | null>(null);
+  const [, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingProfile, setUpdatingProfile] = useState(false);
 
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       setProfileForm((prev) => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof typeof prev],
+          ...(prev[parent as keyof typeof prev] as Record<string, string>),
           [child]: value,
         },
       }));

@@ -91,7 +91,7 @@ export default function SearchBar({
       {isFocused && searchQuery && (
         <div className="absolute z-10 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg">
           <div className="p-3 text-sm text-slate-600 dark:text-slate-300">
-            {t("search.searchingFor")}: <span className="font-medium text-slate-900 dark:text-white">"{searchQuery}"</span>
+            {t("search.searchingFor")}: <span className="font-medium text-slate-900 dark:text-white">&quot;{searchQuery}&quot;</span>
           </div>
         </div>
       )}

@@ -165,16 +165,17 @@ export class AuthService {
   /**
    * Register a new user (simulated - FakeStore API doesn't support registration)
    */
-  static async register(email: string, password: string, firstName: string, lastName: string): Promise<{ user: any; token: string }> {
+  static async register(email: string, password: string, firstName: string, lastName: string): Promise<{ user: FakeStoreUser; token: string }> {
     try {
       // Simulate registration delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Since FakeStore API doesn't support registration, we'll create a mock user
-      const mockUser = {
+      const mockUser: FakeStoreUser = {
         id: Date.now(),
         email,
         username: email.split('@')[0],
+        password: password,
         name: {
           firstname: firstName,
           lastname: lastName

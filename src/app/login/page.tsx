@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
-import { DEMO_USERS } from "@/services/authService";
+// import { DEMO_USERS } from "@/services/authService";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function LoginPage() {
@@ -111,7 +111,7 @@ export default function LoginPage() {
             : t("auth.errors.registerFailed"),
         });
       }
-    } catch (error) {
+    } catch {
       setErrors({
         general: t("auth.errors.networkError"),
       });
@@ -132,7 +132,7 @@ export default function LoginPage() {
           general: t("auth.errors.networkError"),
         });
       }
-    } catch (error) {
+    } catch {
       setErrors({
         general: t("auth.errors.networkError"),
       });

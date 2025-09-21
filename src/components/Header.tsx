@@ -9,7 +9,7 @@ import CurrencySwitcher from "./CurrencySwitcher";
 import { cartService } from "@/services";
 
 export default function Header() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { user, logout } = useAuth();
   const [cartItemCount, setCartItemCount] = useState(0);
 

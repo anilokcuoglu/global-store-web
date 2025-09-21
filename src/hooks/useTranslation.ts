@@ -1,20 +1,20 @@
 'use client';
 
 import { useApp } from '@/contexts/AppContext';
-import { translations, TranslationKeys } from '@/locales';
+import { translations } from '@/locales';
 
 export function useTranslation() {
   const { language } = useApp();
   
   const t = (key: string, params?: Record<string, string>): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
+    let value: unknown = translations[language];
     
     for (const k of keys) {
-      value = value?.[k];
+      value = (value as Record<string, unknown>)?.[k];
     }
     
-    let result = value || key;
+    let result = (value as string) || key;
     
     // Handle string interpolation
     if (params) {

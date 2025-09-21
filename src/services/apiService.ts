@@ -1,20 +1,26 @@
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T;
   success: boolean;
   message?: string;
   status: number;
 }
 
-export interface ApiError {
-  message: string;
-  status: number;
-  code?: string;
+export class ApiError extends Error {
+  public status: number;
+  public code?: string;
+
+  constructor(message: string, status: number, code?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+  }
 }
 
 export interface RequestConfig {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   timeout?: number;
   retries?: number;
 }
@@ -107,15 +113,15 @@ export class ApiService {
     return this.makeRequest<T>(endpoint, { ...config, method: 'GET' });
   }
 
-  public async post<T>(endpoint: string, data?: any, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
+  public async post<T>(endpoint: string, data?: unknown, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
     return this.makeRequest<T>(endpoint, { ...config, method: 'POST', body: data });
   }
 
-  public async put<T>(endpoint: string, data?: any, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
+  public async put<T>(endpoint: string, data?: unknown, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
     return this.makeRequest<T>(endpoint, { ...config, method: 'PUT', body: data });
   }
 
-  public async patch<T>(endpoint: string, data?: any, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
+  public async patch<T>(endpoint: string, data?: unknown, config?: Omit<RequestConfig, 'method'>): Promise<ApiResponse<T>> {
     return this.makeRequest<T>(endpoint, { ...config, method: 'PATCH', body: data });
   }
 
@@ -144,11 +150,11 @@ export function createApiError(message: string, status: number, code?: string): 
   return new ApiError(message, status, code);
 }
 
-export function isApiError(error: any): error is ApiError {
+export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError;
 }
 
-export function handleApiError(error: any): string {
+export function handleApiError(error: unknown): string {
   if (isApiError(error)) {
     return error.message;
   }
@@ -163,7 +169,7 @@ export function handleApiError(error: any): string {
 // Mock API for development/testing
 export class MockApiService {
   private static instance: MockApiService;
-  private mockData: Map<string, any> = new Map();
+  private mockData: Map<string, unknown> = new Map();
 
   private constructor() {
     this.initializeMockData();
@@ -212,11 +218,11 @@ export class MockApiService {
     });
   }
 
-  public async post<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  public async post<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const id = Date.now();
-        const newData = { ...data, id };
+        const newData = { ...(data as Record<string, unknown>), id };
         resolve({
           data: newData as T,
           success: true,
@@ -226,7 +232,7 @@ export class MockApiService {
     });
   }
 
-  public setMockData(endpoint: string, data: any): void {
+  public setMockData(endpoint: string, data: unknown): void {
     this.mockData.set(endpoint, data);
   }
 }
@@ -236,7 +242,7 @@ export const mockApiService = MockApiService.getInstance();
 // Cache service for API responses
 export class CacheService {
   private static instance: CacheService;
-  private cache: Map<string, { data: any; timestamp: number; ttl: number }> = new Map();
+  private cache: Map<string, { data: unknown; timestamp: number; ttl: number }> = new Map();
 
   private constructor() {}
 
@@ -247,7 +253,7 @@ export class CacheService {
     return CacheService.instance;
   }
 
-  public set(key: string, data: any, ttl: number = 300000): void { // 5 minutes default
+  public set(key: string, data: unknown, ttl: number = 300000): void { // 5 minutes default
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -255,7 +261,7 @@ export class CacheService {
     });
   }
 
-  public get(key: string): any | null {
+  public get(key: string): unknown | null {
     const cached = this.cache.get(key);
     
     if (!cached) {

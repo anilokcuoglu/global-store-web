@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthService, FakeStoreUser } from '@/services/authService';
+import { AuthService } from '@/services/authService';
 
 export interface User {
   id: string;
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, _password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
       
